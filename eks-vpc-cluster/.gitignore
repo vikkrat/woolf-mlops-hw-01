@@ -1,0 +1,9 @@
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+backend.hcl
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json

@@ -1,0 +1,6 @@
+bucket       = "REPLACE_WITH_YOUR_TERRAFORM_STATE_BUCKET"
+key          = "homework-2/vpc/terraform.tfstate"
+region       = "eu-central-1"
+encrypt      = true
+use_lockfile = true
+
