@@ -1,0 +1,68 @@
+# =============================================================================
+# Dockerfile.slim - optimized multi-stage image.
+#
+# Stage 1 (builder) installs the Python dependencies into an isolated prefix.
+# Stage 2 (runtime) starts from a clean python:3.13-slim and copies in only
+# the installed packages, the inference script and the model.
+# No compiler, no pip cache, no .git, no virtualenv, no project files that
+# inference does not need. Behaviour is identical to the fat image.
+# =============================================================================
+
+# --- Stage 1: builder -------------------------------------------------------
+FROM python:3.13-slim AS builder
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
+WORKDIR /build
+
+# Build-time only: some sdists need a compiler. It never reaches the runtime stage.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+
+# Everything lands under /install so it can be copied as one self-contained tree.
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
+
+# Drop artefacts that are useless at runtime: bundled tests, bytecode caches,
+# static libraries and header files shipped inside the torch wheel.
+RUN find /install -type d -name "__pycache__" -prune -exec rm -rf {} + && \
+    find /install -type d -name "test" -path "*/torch/*" -prune -exec rm -rf {} + && \
+    find /install -type d -name "tests" -prune -exec rm -rf {} + && \
+    find /install -type d -name "include" -path "*/torch/*" -prune -exec rm -rf {} + && \
+    find /install -type f -name "*.a" -delete && \
+    find /install -type f -name "*.pyc" -delete
+
+# --- Stage 2: runtime -------------------------------------------------------
+FROM python:3.13-slim AS runtime
+
+LABEL maintainer="Viktoriia Kratser" \
+      description="Slim multi-stage inference image for a TorchScript MobileNetV2" \
+      variant="slim"
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
+
+# Minimal runtime library required by the torch wheels (OpenMP).
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Only the installed Python packages travel from the builder stage.
+COPY --from=builder /install /usr/local
+
+WORKDIR /app
+
+# Only what inference actually needs: the script and the TorchScript model.
+COPY app/ ./app/
+COPY model/ ./model/
+
+# Run as an unprivileged user.
+RUN useradd --create-home --uid 10001 appuser && chown -R appuser:appuser /app
+USER appuser
+
+ENTRYPOINT ["python", "app/inference.py"]
+CMD ["example.jpg"]

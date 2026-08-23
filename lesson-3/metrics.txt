@@ -1,0 +1,271 @@
+﻿metrics collected: 2026-08-23 18:50:11
+host: Microsoft Windows NT 10.0.26200.0
+docker: Docker version 27.5.1, build 9f9e405
+compose: Docker Compose version v2.32.4-desktop.1
+
+=== 1. MODEL EXPORT ===
+exporting inside a python:3.13 container ...
+Unable to find image 'python:3.13' locally
+3.13: Pulling from library/python
+1da3cb2f93f2: Pulling fs layer
+68b64c51cda3: Pulling fs layer
+ec935196e6a0: Pulling fs layer
+d74736caedd4: Pulling fs layer
+10d0f34e1d4c: Pulling fs layer
+2b1680a45e95: Pulling fs layer
+a23a6c521af3: Pulling fs layer
+d74736caedd4: Waiting
+10d0f34e1d4c: Waiting
+2b1680a45e95: Waiting
+a23a6c521af3: Waiting
+68b64c51cda3: Verifying Checksum
+68b64c51cda3: Download complete
+ec935196e6a0: Verifying Checksum
+ec935196e6a0: Download complete
+1da3cb2f93f2: Download complete
+1da3cb2f93f2: Pull complete
+68b64c51cda3: Pull complete
+10d0f34e1d4c: Verifying Checksum
+10d0f34e1d4c: Download complete
+a23a6c521af3: Verifying Checksum
+a23a6c521af3: Download complete
+ec935196e6a0: Pull complete
+2b1680a45e95: Download complete
+d74736caedd4: Verifying Checksum
+d74736caedd4: Download complete
+d74736caedd4: Pull complete
+10d0f34e1d4c: Pull complete
+2b1680a45e95: Pull complete
+a23a6c521af3: Pull complete
+Digest: sha256:e16ab55c341bfd0e7da665bc2d48939cff890b43a41867fe6e1f0690638ceb7c
+Status: Downloaded newer image for python:3.13
+WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager, possibly rendering your system unusable. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv. Use the --root-user-action option if you know what you are doing and want to suppress this warning.
+System.Management.Automation.RemoteException
+0.9%
+1.8%
+2.8%
+3.7%
+4.6%
+5.5%
+6.4%
+7.4%
+8.3%
+9.2%
+10.1%
+11.0%
+12.0%
+12.9%
+13.8%
+14.7%
+15.6%
+16.5%
+17.5%
+18.4%
+19.3%
+20.2%
+21.1%
+22.1%
+23.0%
+23.9%
+24.8%
+25.7%
+26.7%
+27.6%
+28.5%
+29.4%
+30.3%
+31.3%
+32.2%
+33.1%
+34.0%
+34.9%
+35.9%
+36.8%
+37.7%
+38.6%
+39.5%
+40.4%
+41.4%
+42.3%
+43.2%
+44.1%
+45.0%
+46.0%
+46.9%
+47.8%
+48.7%
+49.6%
+50.6%
+51.5%
+52.4%
+53.3%
+54.2%
+55.2%
+56.1%
+57.0%
+57.9%
+58.8%
+59.8%
+60.7%
+61.6%
+62.5%
+63.4%
+64.3%
+65.3%
+66.2%
+67.1%
+68.0%
+68.9%
+69.9%
+70.8%
+71.7%
+72.6%
+73.5%
+74.5%
+75.4%
+76.3%
+77.2%
+78.1%
+79.1%
+80.0%
+80.9%
+81.8%
+82.7%
+83.7%
+84.6%
+85.5%
+86.4%
+87.3%
+88.2%
+89.2%
+90.1%
+91.0%
+91.9%
+92.8%
+93.8%
+94.7%
+95.6%
+96.5%
+97.4%
+98.4%
+99.3%
+100.0%
+[export] weights      : MobileNet_V2_Weights.IMAGENET1K_V2
+[export] categories   : 1000
+Downloading: "https://download.pytorch.org/models/mobilenet_v2-7ebf99e0.pth" to /root/.cache/torch/hub/checkpoints/mobilenet_v2-7ebf99e0.pth
+[export] max |eager - traced| difference: 6.229e-06
+[export] saved TorchScript model -> model/model.pt (13.34 MB)
+model file size: 13.34 MB
+
+=== BUILD ml-infer-fat:1.0 (-f Dockerfile.fat --no-cache) ===
+build status : OK
+build time   : 71 s
+
+=== BUILD ml-infer-slim:1.0 (-f Dockerfile.slim --no-cache) ===
+build status : OK
+build time   : 84 s
+
+=== INFERENCE ml-infer-fat:1.0 ===
+image : example.jpg
+model : model/model.pt
+top-3 predictions:
+  1. class_id=258  confidence=0.2883  label=Samoyed
+  2. class_id=259  confidence=0.0511  label=Pomeranian
+  3. class_id=261  confidence=0.0176  label=keeshond
+wall time    : 3,712 ms
+
+=== INFERENCE ml-infer-slim:1.0 ===
+image : example.jpg
+model : model/model.pt
+top-3 predictions:
+  1. class_id=258  confidence=0.2883  label=Samoyed
+  2. class_id=259  confidence=0.0511  label=Pomeranian
+  3. class_id=261  confidence=0.0176  label=keeshond
+wall time    : 6,951 ms
+
+=== INFERENCE DIFF (fat vs slim) ===
+IDENTICAL - top-3 predictions match bit for bit
+
+=== 5. IMAGE SIZES ===
+REPOSITORY        TAG         IMAGE ID       CREATED              SIZE
+ml-infer-slim     1.0         7e0127f0f7ab   13 seconds ago       792MB
+ml-infer-fat      1.0         ef8fa7bbe19b   About a minute ago   2.62GB
+
+=== 5.1 LAYER COUNT ===
+ml-infer-fat:1.0: 12 layers (rootfs), 21 history entries
+ml-infer-slim:1.0: 10 layers (rootfs), 20 history entries
+
+=== 5.2 DOCKER HISTORY - FAT ===
+SIZE      CREATED BY
+0B        CMD ["example.jpg"]
+0B        ENTRYPOINT ["python" "app/inference.py"]
+14.1MB    COPY . . # buildkit
+1.11GB    RUN /bin/sh -c pip install --upgrade pip &&     pip install -r requirements.txt # buildkit
+517B      COPY requirements.txt . # buildkit
+390MB     RUN /bin/sh -c apt-get update && apt-get install -y         build-essential         gcc         g++         make         cmake         git         cur
+0B        WORKDIR /app
+0B        ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
+0B        LABEL maintainer=Viktoriia Kratser description=Fat (unoptimized) inference image for a TorchScript MobileNetV2 variant=fat
+0B        CMD ["python3"]
+36B       RUN /bin/sh -c set -eux;  for src in idle3 pip3 pydoc3 python3 python3-config; do   dst="$(echo "$src" | tr -d 3)";   [ -s "/usr/local/bin/$src" ];   
+71.3MB    RUN /bin/sh -c set -eux;   wget -O python.tar.xz "https://www.python.org/ftp/python/${PYTHON_VERSION%%[a-z]*}/Python-$PYTHON_VERSION.tar.xz";  echo "$
+0B        ENV PYTHON_SHA256=1e66a7945a48390ee4c2a4268a0e4185884059a13c4aab6d148aa208deea4a76
+0B        ENV PYTHON_VERSION=3.13.15
+0B        ENV GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305
+17.9MB    RUN /bin/sh -c set -eux;  apt-get update;  apt-get install -y --no-install-recommends   libbluetooth-dev   tk-dev   uuid-dev  ;  apt-get dist-clean # 
+0B        ENV PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+656MB     RUN /bin/sh -c set -ex;  apt-get update;  apt-get install -y --no-install-recommends   autoconf   automake   bzip2   default-libmysqlclient-dev   dpkg
+185MB     RUN /bin/sh -c set -eux;  apt-get update;  apt-get install -y --no-install-recommends   git   mercurial   openssh-client   subversion     procps  ;  a
+60.2MB    RUN /bin/sh -c set -eux;  apt-get update;  apt-get install -y --no-install-recommends   ca-certificates   curl   gnupg   netbase   sq   wget  ;  apt-g
+120MB     # debian.sh --arch 'amd64' out/ 'trixie' '@1785715200'
+
+=== 5.3 DOCKER HISTORY - SLIM ===
+SIZE      CREATED BY
+0B        CMD ["example.jpg"]
+0B        ENTRYPOINT ["python" "app/inference.py"]
+0B        USER appuser
+14MB      RUN /bin/sh -c useradd --create-home --uid 10001 appuser && chown -R appuser:appuser /app # buildkit
+14MB      COPY model/ ./model/ # buildkit
+2.55kB    COPY app/ ./app/ # buildkit
+0B        WORKDIR /app
+645MB     COPY /install /usr/local # buildkit
+1.55MB    RUN /bin/sh -c apt-get update && apt-get install -y --no-install-recommends         libgomp1     && rm -rf /var/lib/apt/lists/* # buildkit
+0B        ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
+0B        LABEL maintainer=Viktoriia Kratser description=Slim multi-stage inference image for a TorchScript MobileNetV2 variant=slim
+0B        CMD ["python3"]
+36B       RUN /bin/sh -c set -eux;  for src in idle3 pip3 pydoc3 python3 python3-config; do   dst="$(echo "$src" | tr -d 3)";   [ -s "/usr/local/bin/$src" ];   
+35.6MB    RUN /bin/sh -c set -eux;   savedAptMark="$(apt-mark showmanual)";  apt-get update;  apt-get install -y --no-install-recommends   dpkg-dev   gcc   gnup
+0B        ENV PYTHON_SHA256=1e66a7945a48390ee4c2a4268a0e4185884059a13c4aab6d148aa208deea4a76
+0B        ENV PYTHON_VERSION=3.13.15
+0B        ENV GPG_KEY=7169605F62C751356D054A26A821E680E5FA6305
+3.81MB    RUN /bin/sh -c set -eux;  apt-get update;  apt-get install -y --no-install-recommends   ca-certificates   netbase   tzdata  ;  apt-get dist-clean # bu
+0B        ENV PATH=/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+78.6MB    # debian.sh --arch 'amd64' out/ 'trixie' '@1785715200'
+
+=== 5.4 BASE IMAGE SIZES ===
+python            3.13        607ad197061e   12 days ago          1.11GB
+
+=== 5.5 WHAT IS INSIDE EACH IMAGE (/app) ===
+--- fat /app:
+total 104
+drwxr-xr-x 1 root root  4096 Aug 23 16:51 .
+drwxr-xr-x 1 root root  4096 Aug 23 16:54 ..
+drwxr-xr-x 2 root root  4096 Aug 16 00:15 app
+-rwxr-xr-x 1 root root 71687 Aug 16 00:22 example.jpg
+-rwxr-xr-x 1 root root  2128 Aug 16 00:14 export_model.py
+-rwxr-xr-x 1 root root  2987 Aug 23 16:51 metrics.txt
+drwxr-xr-x 2 root root  4096 Aug 16 00:26 model
+-rwxr-xr-x 1 root root   517 Aug 16 00:14 requirements.txt
+drwxr-xr-x 2 root root  4096 Aug 16 00:28 scripts
+--- slim /app:
+total 28
+drwxr-xr-x 1 appuser appuser 4096 Aug 23 16:54 .
+drwxr-xr-x 1 root    root    4096 Aug 23 16:54 ..
+drwxr-xr-x 1 appuser appuser 4096 Aug 16 00:15 app
+drwxr-xr-x 1 appuser appuser 4096 Aug 16 00:26 model
+fat  gcc : /usr/bin/gcc
+slim gcc : absent
+
+=== DONE ===
+all measurements saved to metrics.txt
+inference outputs saved to output_fat.txt / output_slim.txt

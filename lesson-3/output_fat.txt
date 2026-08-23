@@ -1,0 +1,6 @@
+﻿image : example.jpg
+model : model/model.pt
+top-3 predictions:
+  1. class_id=258  confidence=0.2883  label=Samoyed
+  2. class_id=259  confidence=0.0511  label=Pomeranian
+  3. class_id=261  confidence=0.0176  label=keeshond

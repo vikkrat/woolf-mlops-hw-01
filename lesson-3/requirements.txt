@@ -1,0 +1,13 @@
+# ML runtime dependencies for the inference image (Python 3.13).
+#
+# CPU-only wheels are used on purpose: this is an inference-only service,
+# so pulling the CUDA build of torch (~6 GB of NVIDIA packages) would be
+# dead weight inside the container.
+#
+# On Linux/Windows the "+cpu" builds live on the PyTorch index below.
+# On macOS (arm64) drop the "+cpu" suffix - the default wheels are CPU-only there.
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+torch==2.7.0+cpu
+torchvision==0.22.0+cpu
+pillow==11.2.1

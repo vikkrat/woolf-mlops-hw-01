@@ -1,0 +1,51 @@
+# =============================================================================
+# Dockerfile.fat - deliberately "heavy" single-stage image (baseline).
+#
+# Single stage, full python:3.13 base, build toolchain kept in the final image,
+# whole build context copied in. It works, but it ships a compiler, headers,
+# pip caches and project files that inference never touches.
+# It exists to be compared against Dockerfile.slim.
+# =============================================================================
+FROM python:3.13
+
+LABEL maintainer="Viktoriia Kratser" \
+      description="Fat (unoptimized) inference image for a TorchScript MobileNetV2" \
+      variant="fat"
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1
+
+WORKDIR /app
+
+# --- 1. System dependencies -------------------------------------------------
+# A full build toolchain plus assorted CLI utilities. None of this is required
+# to *run* inference - it is exactly the kind of ballast the slim image drops.
+RUN apt-get update && apt-get install -y \
+        build-essential \
+        gcc \
+        g++ \
+        make \
+        cmake \
+        git \
+        curl \
+        wget \
+        vim \
+        htop \
+        unzip \
+        libgl1 \
+        libglib2.0-0 \
+    && rm -rf /var/lib/apt/lists/*
+
+# --- 2. Python dependencies -------------------------------------------------
+COPY requirements.txt .
+RUN pip install --upgrade pip && \
+    pip install -r requirements.txt
+# NOTE: no --no-cache-dir, so the ~1 GB pip wheel cache stays inside the image.
+
+# --- 3. Application code + model --------------------------------------------
+# The whole build context is copied: scripts/, export_model.py, example.jpg, ...
+COPY . .
+
+# --- 4. Entry point ---------------------------------------------------------
+ENTRYPOINT ["python", "app/inference.py"]
+CMD ["example.jpg"]

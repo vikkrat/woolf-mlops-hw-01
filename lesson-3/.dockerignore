@@ -1,0 +1,59 @@
+# --- VCS -------------------------------------------------------------------
+.git
+.gitignore
+.gitattributes
+**/.git
+
+# --- Python caches ---------------------------------------------------------
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# --- Virtual environments --------------------------------------------------
+.venv/
+venv/
+env/
+ENV/
+.conda/
+
+# --- Tooling caches --------------------------------------------------------
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.cache/
+.ipynb_checkpoints/
+pip-wheel-metadata/
+
+# --- Logs / archives / temp ------------------------------------------------
+install.log
+metrics.txt
+output_*.txt
+*.log
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+*.rar
+tmp/
+*.tmp
+
+# --- IDE / OS noise --------------------------------------------------------
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# --- Docs & build files not needed at runtime ------------------------------
+README.md
+report.md
+Dockerfile.fat
+Dockerfile.slim
+.dockerignore

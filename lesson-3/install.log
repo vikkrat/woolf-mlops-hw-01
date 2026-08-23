@@ -1,0 +1,43 @@
+
+===========================================================
+2026-08-23 18:55:04 [INFO   ] install_dev_tools.sh started (project root: /d/Woolf/MLOps CICD 2.0 (АІ and ML)/Home Works/home_work_3_kratser_viktoriia/lesson-3)
+2026-08-23 18:55:04 [INFO   ] host: MINGW64_NT-10.0-26200 3.5.7-463ebcdc.x86_64 x86_64 | user: vkrat
+2026-08-23 18:55:04 [INFO   ] mode: --check-only (nothing will be installed)
+2026-08-23 18:55:04 [INFO   ] detected package manager: unknown
+2026-08-23 18:55:04 [OK     ] docker found: Docker version 27.5.1, build 9f9e405
+2026-08-23 18:55:05 [OK     ] docker daemon is running
+2026-08-23 18:55:05 [OK     ] docker compose V2 found: Docker Compose version v2.32.4-desktop.1
+2026-08-23 18:55:06 [MISSING] python  is older than the required 3.13
+2026-08-23 18:55:06 [INFO   ]   the Docker images pin python:3.13 - please install Python 3.13 locally as well
+2026-08-23 18:55:07 [OK     ] pip found: pip 24.0 from C:\Program Files\Python312\Lib\site-packages\pip (python 3.12)
+2026-08-23 18:55:07 [WARN   ] python package 'torch' is NOT installed
+2026-08-23 18:55:07 [WARN   ] python package 'torchvision' is NOT installed
+2026-08-23 18:55:08 [WARN   ] python package 'pillow' is NOT installed
+2026-08-23 18:55:08 [INFO   ]   --check-only: skipping 'pip install -r requirements.txt'
+2026-08-23 18:55:08 [MISSING] python package 'torch' is still not available
+2026-08-23 18:55:08 [MISSING] python package 'torchvision' is still not available
+2026-08-23 18:55:08 [MISSING] python package 'pillow' is still not available
+2026-08-23 18:55:08 [WARN   ] smoke test failed: Python was not found; run without arguments to install from the Microsoft Store, or disable this shortcut from Settings > Apps > Advanced app settings > App execution aliases.
+2026-08-23 18:55:09 [INFO   ] -----------------------------------------------------------
+2026-08-23 18:55:09 [WARN   ] ENVIRONMENT NOT READY - 4 item(s) missing (see the MISSING lines above)
+2026-08-23 18:55:09 [INFO   ] log written to /d/Woolf/MLOps CICD 2.0 (АІ and ML)/Home Works/home_work_3_kratser_viktoriia/lesson-3/install.log
+
+===========================================================
+2026-08-23 18:56:23 [INFO   ] install_dev_tools.sh started (project root: /d/Woolf/MLOps CICD 2.0 (АІ and ML)/Home Works/home_work_3_kratser_viktoriia/lesson-3)
+2026-08-23 18:56:24 [INFO   ] host: MINGW64_NT-10.0-26200 3.5.7-463ebcdc.x86_64 x86_64 | user: vkrat
+2026-08-23 18:56:24 [INFO   ] mode: --check-only (nothing will be installed)
+2026-08-23 18:56:24 [INFO   ] detected package manager: unknown
+2026-08-23 18:56:24 [OK     ] docker found: Docker version 27.5.1, build 9f9e405
+2026-08-23 18:56:25 [OK     ] docker daemon is running
+2026-08-23 18:56:25 [OK     ] docker compose V2 found: Docker Compose version v2.32.4-desktop.1
+2026-08-23 18:56:26 [MISSING] python 3.12.2 is older than the required 3.13
+2026-08-23 18:56:26 [INFO   ]   the Docker images pin python:3.13 - please install Python 3.13 locally as well
+2026-08-23 18:56:27 [OK     ] pip found: pip 24.0 from C:\Program Files\Python312\Lib\site-packages\pip (python 3.12)
+2026-08-23 18:56:27 [OK     ] python package 'torch' is installed (2.5.1+cu121)
+2026-08-23 18:56:27 [OK     ] python package 'torchvision' is installed (0.20.1+cu121)
+2026-08-23 18:56:28 [OK     ] python package 'pillow' is installed (11.0.0)
+2026-08-23 18:56:28 [INFO   ] all Python packages already present - nothing to install (idempotent run)
+2026-08-23 18:56:47 [OK     ] smoke test: torch=2.5.1+cu121 torchvision=0.20.1+cu121 pillow=11.0.0
+2026-08-23 18:56:47 [INFO   ] -----------------------------------------------------------
+2026-08-23 18:56:47 [WARN   ] ENVIRONMENT NOT READY - 1 item(s) missing (see the MISSING lines above)
+2026-08-23 18:56:47 [INFO   ] log written to /d/Woolf/MLOps CICD 2.0 (АІ and ML)/Home Works/home_work_3_kratser_viktoriia/lesson-3/install.log
