@@ -105,7 +105,7 @@ data "terraform_remote_state" "vpc" { ... }
 ## 5. Connect with kubectl
 
 ```powershell
-aws eks --region eu-central-1 update-kubeconfig --name mlops-hw2
+aws eks --region eu-north-1 update-kubeconfig --name mlops-hw2
 kubectl get nodes -o wide
 kubectl get nodes --show-labels
 ```
@@ -132,3 +132,26 @@ Do not delete the S3 state bucket until both Terraform destroys are complete and
 you have saved the evidence required for submission. Afterward, delete the state
 objects and bucket if it exists only for this homework.
 
+## 7. Результати фактичного запуску в AWS
+
+Середовище було розгорнуте в `eu-north-1` (Stockholm). EKS-кластер отримав
+статус `Active`, обидві managed node groups — `Active`, а `kubectl` показав два
+worker nodes у статусі `Ready`.
+
+### Два Kubernetes-вузли `Ready`, labels і taint
+
+![kubectl get nodes — Ready](assets/01-kubectl-ready-nodes.png)
+
+### EKS cluster `mlops-hw2` — `Active`
+
+![EKS cluster Active](assets/02-eks-cluster-active.png)
+
+### Дві managed node groups — `Active`
+
+![EKS node groups Active](assets/03-eks-node-groups-active.png)
+
+### VPC `mlops-hw2` — `Available`, CIDR `10.42.0.0/16`
+
+![VPC Available](assets/04-vpc-available.png)
+
+Докладний опис перевірки й очищення ресурсів наведено у [report.md](report.md).
