@@ -23,7 +23,6 @@ resource "kubectl_manifest" "applicationset" {
     gitops_revision  = var.gitops_revision
   })
 
-  wait             = true
+  wait              = true
   server_side_apply = true
 }
-
