@@ -101,8 +101,8 @@ port-forward не створює додатковий платний Load Balanc
 ## 6. Контроль витрат і видалення
 
 Для лабораторії використано один NAT Gateway, один EKS control plane і дві
-`t3.small` nodes. Справжні GPU instances не створювалися. Після підтвердження
-доказів ресурси буде видалено в безпечному порядку:
+`t3.small` nodes. Справжні GPU instances не створювалися. Після фіксації доказів
+ресурси видалено в безпечному порядку:
 
 1. Terraform Argo CD;
 2. Terraform EKS;
@@ -110,5 +110,17 @@ port-forward не створює додатковий платний Load Balanc
 4. усі версії об'єктів і S3 state bucket;
 5. фінальний AWS audit порожніх списків.
 
-Після teardown до звіту буде додано окремий доказ очищення.
+Terraform підтвердив `Resources: 2 destroyed` для Argo CD та
+`Resources: 19 destroyed` для VPC. EKS cluster і обидві node groups також
+видалено. Із versioned S3 bucket прибрано 29 версій/маркеров, після чого видалено
+сам bucket. Додатково знайдено старий навчальний ECR repository `nginx-repo` з
+одним образом (64 122 300 bytes) і видалено його з образом.
 
+Фінальний аудит показав нуль EKS clusters, EC2 instances, NAT Gateways, Elastic
+IP, EBS volumes, Load Balancers, Auto Scaling groups, RDS instances, ECR
+repositories, non-default VPC, S3 buckets і Route53 hosted zones. KMS-ключі
+навчального EKS переведені AWS у `PendingDeletion`; це очікуваний стан після
+Terraform destroy, і ключі більше не можна використовувати для нараховуваних
+операцій.
+
+![Фінальний AWS cost-safety audit](assets/05-final-aws-cleanup.jpg)

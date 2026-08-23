@@ -103,6 +103,16 @@ drift and `prune` removes Kubernetes objects deleted from Git.
 
 ![Terraform у гілці lesson-7](terraform/argocd/assets/04-lesson-7-terraform.png)
 
+### Фінальне очищення AWS
+
+Після фіксації результатів Argo CD, EKS, обидві node groups, VPC, NAT Gateway,
+Elastic IP та versioned Terraform state bucket видалено. Додатково видалено
+старий навчальний ECR repository `nginx-repo`. Фінальна перевірка показала нуль
+активних або зупинених EC2, EKS clusters, NAT, EIP, EBS, Load Balancers, ASG,
+RDS, ECR, non-default VPC, S3 buckets і Route53 zones.
+
+![Фінальний AWS cost-safety audit](terraform/argocd/assets/05-final-aws-cleanup.jpg)
+
 ### Cost-safe teardown
 
 Delete Argo CD first, then EKS, and finally VPC. Never delete VPC first because EKS
@@ -119,6 +129,5 @@ cd ../vpc
 terraform destroy
 ```
 
-After teardown, check EKS clusters, load balancers, NAT gateways, Elastic IPs, and
-non-default VPCs in AWS. Keep only the small versioned S3 state bucket if needed;
-otherwise delete all object versions and then the bucket.
+Teardown completed on 24 August 2026. The final audit screenshot above is the
+evidence that the homework infrastructure and storage were removed.
