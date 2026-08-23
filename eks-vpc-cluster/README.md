@@ -155,3 +155,16 @@ worker nodes у статусі `Ready`.
 ![VPC Available](assets/04-vpc-available.png)
 
 Докладний опис перевірки й очищення ресурсів наведено у [report.md](report.md).
+
+### Підтвердження очищення після завершення роботи
+
+CLI-аудит повернув порожні списки для EKS, активних EC2, billable NAT Gateway,
+Elastic IP, load balancers, non-default VPC і homework state bucket.
+
+![Final AWS cost audit — empty](assets/05-final-cost-audit-empty.png)
+
+AWS Console: `Clusters (0)` та лише стандартний default VPC.
+
+![EKS clusters zero](assets/06-eks-clusters-zero.png)
+
+![Only default VPC remains](assets/07-only-default-vpc-remains.png)

@@ -54,4 +54,24 @@ AWS Console також підтвердила:
 4. Фінальна AWS CLI-перевірка відсутності EKS, EC2, NAT Gateway, Elastic IP і VPC
    з тегом `Homework=2`.
 
-Фінальний результат очищення буде зафіксовано після видалення ресурсів.
+## Фінальний результат очищення
+
+Після збереження доказів виконано:
+
+- EKS Terraform destroy: `43 destroyed`;
+- VPC Terraform destroy: `19 destroyed`;
+- видалено всі 24 версії об'єктів спеціального S3 state bucket, після чого
+  видалено сам bucket;
+- AWS CLI повернула `[]` для EKS clusters, активних EC2 instances, billable NAT
+  Gateways, Elastic IP, load balancers, non-default VPC та homework state bucket.
+
+![Фінальний CLI cost audit](assets/05-final-cost-audit-empty.png)
+
+У консолі AWS EKS відображається `Clusters (0)`:
+
+![EKS clusters zero](assets/06-eks-clusters-zero.png)
+
+У VPC Console залишився лише стандартний `default VPC`; навчальний
+`mlops-hw2` видалено:
+
+![Only default VPC remains](assets/07-only-default-vpc-remains.png)
