@@ -20,6 +20,22 @@ module "eks" {
   vpc_id     = data.terraform_remote_state.vpc.outputs.vpc_id
   subnet_ids = data.terraform_remote_state.vpc.outputs.private_subnets
 
+  # Базові керовані add-ons, без яких worker nodes не можуть повноцінно
+  # працювати: CNI надає мережу Pod-ам, kube-proxy реалізує Service networking,
+  # а CoreDNS забезпечує DNS усередині кластера.
+  addons = {
+    vpc-cni = {
+      before_compute = true
+      most_recent    = true
+    }
+    kube-proxy = {
+      most_recent = true
+    }
+    coredns = {
+      most_recent = true
+    }
+  }
+
   # Обидві групи використовують маленькі CPU instances. Друга імітує окремий
   # GPU/workload pool через label і taint, не створюючи дорогий GPU instance.
   eks_managed_node_groups = {
@@ -54,4 +70,3 @@ module "eks" {
     }
   }
 }
-
