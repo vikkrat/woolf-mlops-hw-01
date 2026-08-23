@@ -1,0 +1,40 @@
+# Для навчального середовища UI доступний лише через локальний port-forward.
+server:
+  service:
+    type: ClusterIP
+  extraArgs:
+    - --insecure
+
+configs:
+  params:
+    server.insecure: true
+    controller.operation.processors: "5"
+    controller.status.processors: "10"
+    controller.repo.server.timeout.seconds: "180"
+  rbac:
+    policy.default: role:readonly
+    scopes: "[groups]"
+
+controller:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 512Mi
+
+repoServer:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      memory: 256Mi
+
+applicationSet:
+  resources:
+    requests:
+      cpu: 25m
+      memory: 64Mi
+    limits:
+      memory: 128Mi

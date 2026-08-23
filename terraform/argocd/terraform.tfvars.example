@@ -1,0 +1,7 @@
+aws_region          = "eu-north-1"
+cluster_name        = "mlops-hw2"
+argocd_namespace    = "infra-tools"
+argocd_chart_version = "10.4.0"
+gitops_repo_url     = "https://github.com/vikkrat/goit-argo.git"
+gitops_revision     = "main"
+

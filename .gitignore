@@ -1,0 +1,11 @@
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfvars
+!*.tfvars.example
+backend.hcl
+.terraformrc
+terraform.rc
+kubeconfig*
+argocd-admin-password.txt
+
