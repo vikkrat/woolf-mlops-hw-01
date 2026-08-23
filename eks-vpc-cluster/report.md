@@ -64,6 +64,9 @@ AWS Console також підтвердила:
   видалено сам bucket;
 - AWS CLI повернула `[]` для EKS clusters, активних EC2 instances, billable NAT
   Gateways, Elastic IP, load balancers, non-default VPC та homework state bucket.
+- створений EKS-модулем customer-managed KMS key має стан `PendingDeletion` і
+  заплановану дату остаточного видалення 2026-09-22. AWS не стягує плату за
+  customer-managed KMS keys, для яких заплановано видалення.
 
 ![Фінальний CLI cost audit](assets/05-final-cost-audit-empty.png)
 
