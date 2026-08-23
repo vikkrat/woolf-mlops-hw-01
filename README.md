@@ -12,6 +12,9 @@ Homework 3 is implemented in branch `lesson-7`. Its Terraform configuration is i
 separate public GitOps repository
 [`vikkrat/goit-argo`](https://github.com/vikkrat/goit-argo).
 
+Фактичні результати запуску, діагностика scheduler та докази GitOps-синхронізації
+наведені у [`terraform/argocd/report.md`](terraform/argocd/report.md).
+
 ## Homework 3: Argo CD through Terraform
 
 ### Prerequisites
@@ -85,6 +88,20 @@ deployment works.
 Any commit pushed to a directory under `namespace/*` in `goit-argo` is detected by
 the ApplicationSet. Automated sync applies the change; `selfHeal` corrects manual
 drift and `prune` removes Kubernetes objects deleted from Git.
+
+### Фактичний результат
+
+Перевірено в AWS `eu-north-1`: дві EKS nodes `Ready`, усі Argo CD pod-и
+`Running`, обидві Applications `Synced/Healthy`, Nginx Deployment `2/2`, HTTP
+через port-forward - `200`.
+
+![Успішний EKS та GitOps-деплой](terraform/argocd/assets/01-eks-argocd-gitops-healthy.png)
+
+![EKS cluster Active в AWS Console](terraform/argocd/assets/02-eks-cluster-active.png)
+
+![Публічний GitOps repository](terraform/argocd/assets/03-gitops-repository.png)
+
+![Terraform у гілці lesson-7](terraform/argocd/assets/04-lesson-7-terraform.png)
 
 ### Cost-safe teardown
 
