@@ -86,11 +86,11 @@ resource "aws_sfn_state_machine" "training" {
     StartAt = "ValidateData"
     States = {
       ValidateData = {
-        Type       = "Task"
-        Resource   = "arn:${data.aws_partition.current.partition}:states:::lambda:invoke"
+        Type     = "Task"
+        Resource = "arn:${data.aws_partition.current.partition}:states:::lambda:invoke"
         Parameters = {
           FunctionName = aws_lambda_function.stage["validate"].arn
-          "Payload.$" = "$"
+          "Payload.$"  = "$"
         }
         OutputPath = "$.Payload"
         Retry = [{
@@ -102,11 +102,11 @@ resource "aws_sfn_state_machine" "training" {
         Next = "LogMetrics"
       }
       LogMetrics = {
-        Type       = "Task"
-        Resource   = "arn:${data.aws_partition.current.partition}:states:::lambda:invoke"
+        Type     = "Task"
+        Resource = "arn:${data.aws_partition.current.partition}:states:::lambda:invoke"
         Parameters = {
           FunctionName = aws_lambda_function.stage["log_metrics"].arn
-          "Payload.$" = "$"
+          "Payload.$"  = "$"
         }
         OutputPath = "$.Payload"
         End        = true

@@ -110,3 +110,14 @@ terraform destroy
 Після destroy перевірте відсутність state machines, Lambda та CloudWatch log
 groups із префіксом `mlops-train-automation`. Не видаляйте Terraform state до
 успішного завершення destroy.
+
+## Докази перевірки
+
+Фактична execution `manual-1787614242` завершилася за `0.716 s` зі статусом
+`SUCCEEDED`. Обидва Task states (`ValidateData`, `LogMetrics`) мають події
+`TaskSucceeded`, а фінальний output містить `pipeline_status=SUCCEEDED`, commit
+`lesson-10`, `validated_records=1` і `validation_errors=0`.
+
+![Успішна execution і повна послідовність подій](assets/01-step-functions-succeeded.png)
+
+![Execution status в AWS Console](assets/02-aws-step-functions-graph.png)
