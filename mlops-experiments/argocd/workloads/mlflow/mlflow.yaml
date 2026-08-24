@@ -38,7 +38,6 @@ spec:
               --port 5000
               --backend-store-uri "$MLFLOW_BACKEND_STORE_URI"
               --default-artifact-root "$MLFLOW_ARTIFACT_ROOT"
-              --allowed-hosts '*'
           env:
             - name: AWS_ACCESS_KEY_ID
               valueFrom:
