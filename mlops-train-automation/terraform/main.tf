@@ -115,6 +115,55 @@ resource "aws_sfn_state_machine" "training" {
   })
 }
 
+# GitLab видає job короткоживучий OIDC JWT. AWS перевіряє його без збереження
+# довготривалих access keys у CI/CD variables.
+resource "aws_iam_openid_connect_provider" "gitlab" {
+  url             = "https://gitlab.com"
+  client_id_list  = ["https://gitlab.com"]
+  thumbprint_list = ["b3dd7606d2b5a8b4a13771dbecc9ee1cecafa38a"]
+}
+
+resource "aws_iam_role" "gitlab_ci" {
+  name = "${var.name_prefix}-gitlab-ci-role"
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Principal = {
+        Federated = aws_iam_openid_connect_provider.gitlab.arn
+      }
+      Action = "sts:AssumeRoleWithWebIdentity"
+      Condition = {
+        StringEquals = {
+          "gitlab.com:aud" = "https://gitlab.com"
+        }
+        StringLike = {
+          "gitlab.com:sub" = "project_path:${var.gitlab_project_path}:ref_type:branch:ref:*"
+        }
+      }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy" "gitlab_ci" {
+  name = "start-training-workflow"
+  role = aws_iam_role.gitlab_ci.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect = "Allow"
+      Action = [
+        "states:StartExecution",
+        "states:DescribeExecution"
+      ]
+      Resource = [
+        aws_sfn_state_machine.training.arn,
+        "arn:${data.aws_partition.current.partition}:states:${var.aws_region}:${data.aws_caller_identity.current.account_id}:execution:${aws_sfn_state_machine.training.name}:*"
+      ]
+    }]
+  })
+}
+
 output "state_machine_arn" {
   description = "ARN для GitLab CI variable STATE_MACHINE_ARN."
   value       = aws_sfn_state_machine.training.arn
@@ -122,4 +171,9 @@ output "state_machine_arn" {
 
 output "lambda_function_names" {
   value = { for key, function in aws_lambda_function.stage : key => function.function_name }
+}
+
+output "gitlab_ci_role_arn" {
+  description = "ARN для GitLab CI variable AWS_ROLE_ARN."
+  value       = aws_iam_role.gitlab_ci.arn
 }

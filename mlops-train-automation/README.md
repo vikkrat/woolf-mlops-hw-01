@@ -85,11 +85,11 @@ mlops-train-automation-workflow → Executions**. Успішна execution по�
 
 - `AWS_DEFAULT_REGION=eu-north-1`;
 - `STATE_MACHINE_ARN` — значення `terraform output -raw state_machine_arn`;
-- `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` і за потреби
-  `AWS_SESSION_TOKEN` — лише якщо навчальне середовище не має OIDC.
+- `AWS_ROLE_ARN` — значення `terraform output -raw gitlab_ci_role_arn`.
 
-Для production використовуйте GitLab OIDC та тимчасові AWS credentials замість
-довготривалих access keys.
+Job отримує `GITLAB_OIDC_TOKEN` автоматично та обмінює його через AWS STS на
+тимчасові credentials на 15 хвилин. Довготривалі access keys не створюються і
+не зберігаються в GitLab.
 
 ## Тести
 

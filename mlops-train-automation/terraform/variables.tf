@@ -10,6 +10,12 @@ variable "name_prefix" {
   default     = "mlops-train-automation"
 }
 
+variable "gitlab_project_path" {
+  description = "Повний GitLab namespace/project для обмеження OIDC trust policy."
+  type        = string
+  default     = "vikkrat-group/mlops-train-automation"
+}
+
 variable "tags" {
   description = "Спільні tags для аудиту й безпечного видалення ресурсів."
   type        = map(string)
