@@ -104,6 +104,19 @@ python experiments/train_and_push.py
 Очікуються чотири runs. Для кожного доступні parameters `C`, `max_iter`,
 `solver`, metrics `accuracy`/`loss`, tags і artifact `model`.
 
+Фактичний запуск 25.08.2026 створив чотири незалежні runs:
+
+| Run ID | C | max_iter | accuracy | loss |
+|---|---:|---:|---:|---:|
+| `8ec9e8eda21d4d7993187bc4f67bd1ae` | 0.01 | 100 | 0.842105 | 0.669840 |
+| `0655e3744c4b490abbdc19d17f4b025a` | 0.1 | 200 | 0.947368 | 0.373275 |
+| `127cd3669c954495a3ae098d8b4d795f` | 1.0 | 300 | 0.947368 | 0.175673 |
+| `caea7dd8bd2645b484f053dcf5b61bf7` | 10.0 | 500 | 0.947368 | **0.096578** |
+
+Переможець — `caea7dd...`: серед трьох моделей з однаковою найкращою
+accuracy вона має найменший log loss. Її artifact успішно завантажено з MinIO
+у `best_model/model` під час перевірки (бінарний файл навмисно не комітиться).
+
 ## Перевірка метрик у Grafana
 
 Відкрийте **Grafana → Explore**, виберіть Prometheus datasource і виконайте:
@@ -148,6 +161,18 @@ policies.
 4. видалити всі версії Terraform state і S3 bucket;
 5. виконати глобальний AWS cost-audit.
 
-Фінальні докази та точні результати запуску додаються до `report.md` після
-фактичної перевірки.
+## Докази виконання
 
+![Три worker nodes у статусі Ready](assets/01-eks-worker-nodes-ready.png)
+
+![MLflow stack у Kubernetes](assets/02-kubernetes-mlflow-stack-running.png)
+
+![Чотири MLflow runs і завантаження best model](assets/03-training-four-runs-best-model.png)
+
+![Метрики PushGateway та успішні тести](assets/04-pushgateway-metrics-and-tests.png)
+
+![Argo CD Applications Synced/Healthy та всі workloads Running](assets/05-argocd-applications-and-workloads.png)
+
+Розгорнуті UI не залишаються публічними після перевірки: це свідоме рішення
+безпеки й контролю вартості. Термінальні докази показують ті самі фактичні дані
+без постійного AWS Load Balancer.
