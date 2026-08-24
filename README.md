@@ -1,5 +1,10 @@
 # MLOps CI/CD 2.0 — домашні завдання
 
+## Homework 4 / lesson-9
+
+MLflow experiment tracking, MinIO/PostgreSQL backend, PushGateway metrics and
+Grafana verification are implemented in [`mlops-experiments`](mlops-experiments/README.md).
+
 The completed assignment is in [`lesson-3/`](lesson-3/README.md). It contains a
 TorchScript MobileNetV2 model, fat and slim Docker images, reproducible metrics,
 inference outputs and the comparison report.
