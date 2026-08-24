@@ -1,0 +1,35 @@
+stages:
+  - validate
+  - train
+
+validate-terraform:
+  stage: validate
+  image:
+    name: hashicorp/terraform:1.9.8
+    entrypoint: [""]
+  script:
+    - terraform -chdir=terraform fmt -check -recursive
+    - terraform -chdir=terraform init -backend=false
+    - terraform -chdir=terraform validate
+
+train-model:
+  stage: train
+  image:
+    name: amazon/aws-cli:2.15.0
+    entrypoint: [""]
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+  script:
+    # STATE_MACHINE_ARN та AWS credentials зберігаються лише в GitLab CI/CD
+    # Variables. Ніколи не комітьте access keys у репозиторій.
+    - test -n "$STATE_MACHINE_ARN"
+    - test -n "$AWS_DEFAULT_REGION"
+    - EXECUTION_NAME="train-${CI_COMMIT_SHORT_SHA}-${CI_PIPELINE_ID}"
+    - >-
+      EXECUTION_ARN=$(aws stepfunctions start-execution
+      --state-machine-arn "$STATE_MACHINE_ARN"
+      --name "$EXECUTION_NAME"
+      --input "{\"source\":\"gitlab-ci\",\"commit\":\"$CI_COMMIT_SHORT_SHA\"}"
+      --query executionArn --output text)
+    - echo "Started $EXECUTION_ARN"
+    - aws stepfunctions describe-execution --execution-arn "$EXECUTION_ARN"
