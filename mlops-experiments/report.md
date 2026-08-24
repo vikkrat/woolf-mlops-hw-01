@@ -60,6 +60,10 @@ AWS region: `eu-north-1`
 
 ![Applications Synced/Healthy, workloads Running](assets/05-argocd-applications-and-workloads.png)
 
+### Фінальне очищення AWS
+
+![Нульові залишкові платні ресурси](assets/06-final-aws-zero-cost-audit.png)
+
 ## Зауваження й виправлення під час перевірки
 
 1. Argo CD repo-server потребував більше пам'яті для рендерингу Helm chart;
@@ -75,3 +79,18 @@ AWS region: `eu-north-1`
 Для UI-доказів створено лише один короткочасний Load Balancer. Після фіксації
 доказів видаляються Load Balancer, EKS/node group, NAT Gateway, Elastic IP, VPC
 та versioned S3 bucket зі state. Після цього виконується повторний AWS audit.
+
+Очищення завершено 25.08.2026:
+
+- Terraform Argo CD: `2 destroyed`;
+- Terraform EKS: `43 destroyed`;
+- Terraform VPC: `19 destroyed`;
+- із versioned S3 bucket видалено `32` object versions, після чого видалено сам
+  bucket;
+- фінальний аудит `eu-north-1`: EKS `0`, активні EC2 `0`, NAT `0`, Elastic IP
+  `0`, EBS `0`, ELBv2 `0`, Classic ELB `0`, RDS instances/clusters `0`, ECS
+  clusters `0`, SageMaker endpoints/notebooks `0`, S3 buckets `0`.
+
+Отже, після виконання ДЗ перевірених ресурсів, що продовжують нараховувати
+вартість, не залишилося. Дані в Billing/Cost Explorer можуть з'являтися із
+затримкою та відображати вже спожитий час до моменту видалення.

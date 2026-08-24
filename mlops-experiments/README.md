@@ -173,6 +173,14 @@ policies.
 
 ![Argo CD Applications Synced/Healthy та всі workloads Running](assets/05-argocd-applications-and-workloads.png)
 
+![Фінальний AWS cost audit: усі перевірені ресурси дорівнюють нулю](assets/06-final-aws-zero-cost-audit.png)
+
 Розгорнуті UI не залишаються публічними після перевірки: це свідоме рішення
 безпеки й контролю вартості. Термінальні докази показують ті самі фактичні дані
 без постійного AWS Load Balancer.
+
+Після завершення видалено: тимчасовий Load Balancer, Argo CD, EKS та обидві
+node groups, усі EC2 workers, NAT Gateway, Elastic IP, VPC і 32 версії об'єктів
+у Terraform state bucket. Контрольна перевірка `eu-north-1` показала `0` для
+EKS, активних EC2, NAT, EIP, EBS, ELB/ELBv2, RDS, ECS і SageMaker; список S3
+buckets також порожній.
