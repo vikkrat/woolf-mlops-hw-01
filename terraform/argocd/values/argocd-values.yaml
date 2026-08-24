@@ -24,12 +24,22 @@ controller:
       memory: 512Mi
 
 repoServer:
+  # Рендеринг kube-prometheus-stack та кількох Applications паралельно потребує
+  # більше пам'яті, ніж початкові 256 MiB. Окремий worker node запобігає
+  # конкуренції repo-server з Argo CD controller та server.
+  nodeSelector:
+    workload: gpu-simulated
+  tolerations:
+    - key: dedicated
+      operator: Equal
+      value: gpu-workload
+      effect: NoSchedule
   resources:
     requests:
       cpu: 50m
-      memory: 128Mi
-    limits:
       memory: 256Mi
+    limits:
+      memory: 768Mi
 
 applicationSet:
   resources:
