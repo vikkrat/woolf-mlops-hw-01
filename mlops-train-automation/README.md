@@ -131,3 +131,10 @@ GitLab push pipeline `#2787444318` виконав обидві jobs за 49 се
 ![GitLab push pipeline: обидві stages Passed](assets/03-gitlab-pipeline-passed.png)
 
 ![GitLab train-model: OIDC і Step Functions SUCCEEDED](assets/04-gitlab-train-job-succeeded.png)
+
+Після перевірки `terraform destroy` видалив усі `10` керованих ресурсів.
+Автоматично створені Lambda log groups видалено окремо. Фінальний AWS audit
+показав `0` Step Functions, Lambda, IAM roles цього проєкту, GitLab OIDC
+providers, CloudWatch log groups, активних EC2, EKS, NAT і Load Balancers.
+
+![Фінальний AWS zero-resource audit](assets/05-final-aws-zero-resource-audit.png)

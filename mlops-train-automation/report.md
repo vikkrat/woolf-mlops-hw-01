@@ -66,4 +66,32 @@ Push commit `6c5ae95b` автоматично створив pipeline `#27874443
 первинного push, одразу відкликано; локальну копію токена видалено. AWS access
 keys не створювалися й не зберігалися в GitLab variables.
 
-Фінальний AWS teardown audit додається після видалення Terraform-ресурсів.
+## AWS teardown і контроль вартості
+
+Після збирання доказів виконано `terraform destroy`:
+
+- `Destroy complete! Resources: 10 destroyed`;
+- видалено Step Function і дві Lambda;
+- видалено Lambda/Step Functions/GitLab CI IAM roles та inline policies;
+- видалено GitLab OIDC provider;
+- окремо видалено автоматично створені Lambda CloudWatch log groups.
+
+Фінальний аудит показав:
+
+| Категорія | Залишок |
+|---|---:|
+| Step Functions цього ДЗ | 0 |
+| Lambda цього ДЗ | 0 |
+| IAM roles цього ДЗ | 0 |
+| GitLab OIDC providers | 0 |
+| CloudWatch log groups цього ДЗ | 0 |
+| Активні EC2 | 0 |
+| EKS clusters | 0 |
+| NAT gateways | 0 |
+| Load Balancers | 0 |
+
+![AWS zero-resource audit](assets/05-final-aws-zero-resource-audit.png)
+
+Отже, після завершення перевірки ресурсів, які продовжують споживати кошти,
+не залишилося. Billing може із затримкою показувати вже виконані Lambda та Step
+Functions transitions, але нові нарахування після teardown не продовжуються.
