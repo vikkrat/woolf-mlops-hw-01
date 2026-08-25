@@ -1,0 +1,1 @@
+GitLab CI verification for lesson-10.

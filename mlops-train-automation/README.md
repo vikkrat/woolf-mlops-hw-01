@@ -121,3 +121,13 @@ groups із префіксом `mlops-train-automation`. Не видаляйте
 ![Успішна execution і повна послідовність подій](assets/01-step-functions-succeeded.png)
 
 ![Execution status в AWS Console](assets/02-aws-step-functions-graph.png)
+
+GitLab push pipeline `#2787444318` виконав обидві jobs за 49 секунд. Job
+`validate-terraform` перевірив формат і валідність Terraform, а `train-model`
+через OIDC запустив execution `train-6c5ae95b-2787444318`; AWS повернув
+`Execution status: SUCCEEDED`. Жодних довготривалих AWS access keys у GitLab не
+використано.
+
+![GitLab push pipeline: обидві stages Passed](assets/03-gitlab-pipeline-passed.png)
+
+![GitLab train-model: OIDC і Step Functions SUCCEEDED](assets/04-gitlab-train-job-succeeded.png)
