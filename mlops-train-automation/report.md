@@ -42,7 +42,7 @@ Function.
 
 ![CLI evidence: SUCCEEDED і два Task states](assets/01-step-functions-succeeded.png)
 
-![AWS Console: execution details](assets/02-aws-step-functions-graph.png)
+![Повний AWS Graph view із двома зеленими Lambda-кроками](assets/02-aws-step-functions-graph.png)
 
 ## GitLab CI
 

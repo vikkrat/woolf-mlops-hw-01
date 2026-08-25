@@ -120,7 +120,7 @@ groups із префіксом `mlops-train-automation`. Не видаляйте
 
 ![Успішна execution і повна послідовність подій](assets/01-step-functions-succeeded.png)
 
-![Execution status в AWS Console](assets/02-aws-step-functions-graph.png)
+![Повний AWS Graph view: Start → ValidateData ✓ → LogMetrics ✓ → End](assets/02-aws-step-functions-graph.png)
 
 GitLab push pipeline `#2787444318` виконав обидві jobs за 49 секунд. Job
 `validate-terraform` перевірив формат і валідність Terraform, а `train-model`
