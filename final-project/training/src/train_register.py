@@ -91,16 +91,27 @@ def train_and_register() -> dict[str, object]:
             mlflow.log_artifact(str(artifact_path), artifact_path="immutable")
             mlflow.set_tag("model_sha256", checksum)
 
-        model_info = mlflow.sklearn.log_model(
+        # Спочатку зберігаємо модель як артефакт конкретного run. Реєстрацію
+        # виконуємо окремим явним кроком нижче: так Registry отримує стабільний
+        # URI runs:/..., а збій реєстрації не маскує успішне тренування.
+        mlflow.sklearn.log_model(
             sk_model=model,
             artifact_path="model",
-            registered_model_name=REGISTERED_MODEL_NAME,
             input_example=x_test[:2],
         )
 
     client = MlflowClient()
-    version = client.get_model_version(
-        REGISTERED_MODEL_NAME, model_info.registered_model_version
+    try:
+        client.create_registered_model(REGISTERED_MODEL_NAME)
+    except mlflow.exceptions.MlflowException as error:
+        # RESOURCE_ALREADY_EXISTS є очікуваним для другого та наступних run.
+        if "already exists" not in str(error).lower():
+            raise
+    version = client.create_model_version(
+        name=REGISTERED_MODEL_NAME,
+        source=f"runs:/{run.info.run_id}/model",
+        run_id=run.info.run_id,
+        tags={"git_sha": git_sha, "model_sha256": checksum},
     )
     client.transition_model_version_stage(
         name=REGISTERED_MODEL_NAME,
