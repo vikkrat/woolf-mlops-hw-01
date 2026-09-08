@@ -165,6 +165,6 @@ resource "helm_release" "argocd" {
 resource "kubernetes_manifest" "gitops_application" {
   for_each = { for object in local.extra_objects : object.metadata.name => object }
 
-  manifest = each.value
+  manifest   = each.value
   depends_on = [helm_release.argocd]
 }
