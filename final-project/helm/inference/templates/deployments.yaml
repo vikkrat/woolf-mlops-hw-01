@@ -55,6 +55,7 @@ spec:
             - {name: MODEL_SHA256, value: {{ $config.modelSha256 | quote }}}
           volumeMounts:
             - {name: model, mountPath: /models}
+            - {name: cli-home, mountPath: /tmp}
           # ResourceQuota в обох inference namespaces вимагає requests/limits
           # для кожного контейнера, включно з init-контейнерами.
           resources:
@@ -101,6 +102,8 @@ spec:
             capabilities: {drop: ["ALL"]}
       volumes:
         - name: model
+          emptyDir: {}
+        - name: cli-home
           emptyDir: {}
 {{- end }}
 {{- end }}
