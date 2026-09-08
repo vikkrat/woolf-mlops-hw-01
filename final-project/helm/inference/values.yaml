@@ -6,7 +6,8 @@ stable:
   tag: stable
   modelVersion: "1"
   modelS3Uri: s3://REPLACE_WITH_BUCKET/models/production/model.joblib
-  modelSha256: REPLACE_WITH_SHA256
+  # Контрольна сума фактично навченої та зареєстрованої Model Version 1.
+  modelSha256: a210e5748d7d350b9ef5a3a20a256c37a6ca70bdb7b2eeb312ca201a665cbfc3
   replicas: 2
 canary:
   enabled: true
@@ -14,7 +15,7 @@ canary:
   tag: candidate
   modelVersion: "2"
   modelS3Uri: s3://REPLACE_WITH_BUCKET/models/staging/model.joblib
-  modelSha256: REPLACE_WITH_SHA256
+  modelSha256: a210e5748d7d350b9ef5a3a20a256c37a6ca70bdb7b2eeb312ca201a665cbfc3
   replicas: 1
 serviceAccount:
   name: inference

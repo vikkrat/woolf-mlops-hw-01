@@ -50,6 +50,11 @@ spec:
             - {name: MODEL_SHA256, value: {{ $config.modelSha256 | quote }}}
           volumeMounts:
             - {name: model, mountPath: /models}
+          # ResourceQuota в обох inference namespaces вимагає requests/limits
+          # для кожного контейнера, включно з init-контейнерами.
+          resources:
+            requests: {cpu: 25m, memory: 64Mi}
+            limits: {cpu: 100m, memory: 128Mi}
           securityContext:
             # Офіційний aws-cli image запускається від root. Це допустимо лише для
             # короткоживучого init-контейнера: він не має capabilities, не може
