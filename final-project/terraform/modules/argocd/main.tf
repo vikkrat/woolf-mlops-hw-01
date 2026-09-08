@@ -155,8 +155,8 @@ resource "helm_release" "argocd" {
   timeout          = 900
   wait             = true
   values = [yamlencode({
-    server       = { service = { type = "ClusterIP" } }
-    configs      = { params = { "server.insecure" = true } }
+    server  = { service = { type = "ClusterIP" } }
+    configs = { params = { "server.insecure" = true } }
   })]
 }
 
@@ -165,6 +165,6 @@ resource "helm_release" "argocd" {
 resource "kubernetes_manifest" "gitops_application" {
   for_each = { for object in local.extra_objects : object.metadata.name => object }
 
-  manifest  = each.value
+  manifest = each.value
   depends_on = [helm_release.argocd]
 }
