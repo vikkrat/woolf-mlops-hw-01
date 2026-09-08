@@ -61,6 +61,22 @@ locals {
     },
     {
       apiVersion = "argoproj.io/v1alpha1", kind = "Application"
+      metadata   = { name = "ingress-nginx", namespace = "argocd" }
+      spec = {
+        project = "default"
+        source = {
+          repoURL = "https://kubernetes.github.io/ingress-nginx"
+          chart   = "ingress-nginx", targetRevision = "4.14.5"
+          # Для короткого навчального стенда не створюємо AWS Load Balancer:
+          # доступ до ingress робимо контрольованим kubectl port-forward.
+          helm = { releaseName = "ingress-nginx", values = "controller:\n  service:\n    type: ClusterIP\n  metrics:\n    enabled: true\n" }
+        }
+        destination = { server = "https://kubernetes.default.svc", namespace = "ingress-nginx" }
+        syncPolicy  = { automated = { prune = true, selfHeal = true }, syncOptions = ["CreateNamespace=true"] }
+      }
+    },
+    {
+      apiVersion = "argoproj.io/v1alpha1", kind = "Application"
       metadata   = { name = "monitoring", namespace = "argocd" }
       spec = {
         project = "default"

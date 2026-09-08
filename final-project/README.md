@@ -41,7 +41,8 @@ flowchart TB
 1. **Terraform** створює AWS та bootstrap-компоненти.
 2. **Kubernetes/EKS** запускає контейнери й відновлює їх після збоїв.
 3. **Helm** параметризує Kubernetes-маніфести.
-4. **ArgoCD** постійно звіряє кластер із Git і виправляє drift.
+4. **ArgoCD** постійно звіряє кластер із Git і виправляє drift; через нього ж
+   встановлюється `ingress-nginx` для Canary-маршрутизації.
 5. **MLflow** відповідає на питання «яка версія моделі, як навчена і де artifact».
 6. **Canary** обмежує blast radius нової версії десятьма відсотками трафіку.
 7. **Prometheus/Grafana/Loki/Evidently** показують швидкість, помилки, ресурси,
@@ -122,7 +123,8 @@ curl -X POST http://127.0.0.1:8000/predict \
 
 > **Вартість.** EKS control plane, EC2 worker nodes і NAT Gateway платні.
 > Піднімайте стенд лише для перевірки; після screenshots обов'язково виконайте
-> розділ 11. Budget не вимикає ресурси автоматично.
+> розділ 11. Budget не вимикає ресурси автоматично. Ingress controller має
+> `ClusterIP`, тому окремий AWS Load Balancer для demo не створюється.
 
 ### 5.1 Remote state bucket
 
