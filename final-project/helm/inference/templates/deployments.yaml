@@ -46,6 +46,9 @@ spec:
               aws s3 cp "${MODEL_S3_URI}" /models/model.joblib &&
               echo "${MODEL_SHA256}  /models/model.joblib" | sha256sum -c -
           env:
+            # aws-cli створює службовий каталог .aws; /tmp є writable навіть
+            # коли root filesystem контейнера навмисно read-only.
+            - {name: HOME, value: /tmp}
             - {name: MODEL_S3_URI, value: {{ $config.modelS3Uri | quote }}}
             - {name: MODEL_SHA256, value: {{ $config.modelSha256 | quote }}}
           volumeMounts:
