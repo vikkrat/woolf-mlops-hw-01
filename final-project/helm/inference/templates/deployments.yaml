@@ -51,6 +51,11 @@ spec:
           volumeMounts:
             - {name: model, mountPath: /models}
           securityContext:
+            # Офіційний aws-cli image запускається від root. Це допустимо лише для
+            # короткоживучого init-контейнера: він не має capabilities, не може
+            # підвищувати привілеї та завершується до старту inference API.
+            runAsNonRoot: false
+            runAsUser: 0
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
             capabilities: {drop: ["ALL"]}
