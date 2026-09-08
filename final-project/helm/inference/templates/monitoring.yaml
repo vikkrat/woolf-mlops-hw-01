@@ -1,0 +1,39 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: iris-inference
+  labels: {release: monitoring}
+spec:
+  selector:
+    matchLabels: {app.kubernetes.io/name: iris-inference}
+  namespaceSelector:
+    matchNames: [{{ .Release.Namespace }}]
+  endpoints:
+    - {port: http, path: /metrics, interval: 15s}
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata: {name: inference-budget}
+spec:
+  hard:
+    requests.cpu: "2"
+    requests.memory: 2Gi
+    limits.cpu: "4"
+    limits.memory: 4Gi
+    pods: "12"
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: inference-default-deny-ingress}
+spec:
+  podSelector:
+    matchLabels: {app.kubernetes.io/name: iris-inference}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels: {kubernetes.io/metadata.name: ingress-nginx}
+        - namespaceSelector:
+            matchLabels: {kubernetes.io/metadata.name: monitoring}
+      ports:
+        - {protocol: TCP, port: 8000}

@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: iris-environments
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - {environment: staging, namespace: staging, valuesFile: values-staging.yaml}
+          - {environment: production, namespace: production, valuesFile: values-production.yaml}
+  template:
+    metadata:
+      name: "iris-{{environment}}"
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/vikkrat/woolf-mlops-hw-01.git
+        targetRevision: final-project
+        path: final-project/helm/inference
+        helm:
+          valueFiles: [values.yaml, "{{valuesFile}}"]
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: "{{namespace}}"
+      syncPolicy:
+        automated: {prune: true, selfHeal: true}
+        syncOptions: [CreateNamespace=true]

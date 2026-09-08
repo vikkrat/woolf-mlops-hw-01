@@ -1,0 +1,4 @@
+environment: production
+stable: {replicas: 2}
+canary: {replicas: 1}
+ingress: {host: production.iris.local}

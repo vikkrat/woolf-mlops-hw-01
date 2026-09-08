@@ -1,0 +1,20 @@
+{{- range $track := list "stable" "canary" }}
+{{- $config := index $.Values $track }}
+{{- if or (eq $track "stable") $config.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: iris-inference-{{ $track }}
+  labels:
+    app.kubernetes.io/name: iris-inference
+    mlops.track: {{ $track }}
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: iris-inference
+    mlops.track: {{ $track }}
+  ports:
+    - {name: http, port: 8000, targetPort: http}
+{{- end }}
+{{- end }}

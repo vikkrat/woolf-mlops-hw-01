@@ -1,0 +1,6 @@
+trainingImage: REPLACE_WITH_ECR/training:latest
+driftSchedule: "*/15 * * * *"
+thresholds:
+  p95Seconds: 0.5
+  errorRate: 0.01
+  driftScore: 0.3

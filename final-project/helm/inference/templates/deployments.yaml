@@ -1,0 +1,91 @@
+{{- $root := . -}}
+{{- range $track := list "stable" "canary" }}
+{{- $config := index $root.Values $track }}
+{{- if or (eq $track "stable") $config.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iris-inference-{{ $track }}
+  labels:
+    {{- include "iris.labels" $root | nindent 4 }}
+    app.kubernetes.io/version: {{ $config.modelVersion | quote }}
+    mlops.track: {{ $track }}
+spec:
+  replicas: {{ $config.replicas }}
+  revisionHistoryLimit: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: {maxUnavailable: 0, maxSurge: 1}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "iris.name" $root }}
+      mlops.track: {{ $track }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ include "iris.name" $root }}
+        app.kubernetes.io/part-of: mlops-final-project
+        mlops.track: {{ $track }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8000"
+        prometheus.io/path: /metrics
+    spec:
+      serviceAccountName: {{ $root.Values.serviceAccount.name }}
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile: {type: RuntimeDefault}
+      initContainers:
+        # До старту API завантажуємо artifact і перевіряємо його цілісність.
+        - name: fetch-model
+          image: public.ecr.aws/aws-cli/aws-cli:2.27.49
+          command: ["/bin/sh", "-ec"]
+          args:
+            - >-
+              aws s3 cp "${MODEL_S3_URI}" /models/model.joblib &&
+              echo "${MODEL_SHA256}  /models/model.joblib" | sha256sum -c -
+          env:
+            - {name: MODEL_S3_URI, value: {{ $config.modelS3Uri | quote }}}
+            - {name: MODEL_SHA256, value: {{ $config.modelSha256 | quote }}}
+          volumeMounts:
+            - {name: model, mountPath: /models}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: ["ALL"]}
+      containers:
+        - name: api
+          image: "{{ $root.Values.image.repository }}:{{ $config.tag }}"
+          imagePullPolicy: {{ $root.Values.image.pullPolicy }}
+          ports:
+            - {name: http, containerPort: 8000}
+          env:
+            - {name: MLOPS_ENVIRONMENT, value: {{ $root.Values.environment | quote }}}
+            - {name: MLOPS_MODEL_VERSION, value: {{ $config.modelVersion | quote }}}
+            - {name: MLOPS_MODEL_PATH, value: /models/model.joblib}
+            - {name: MLOPS_MODEL_SHA256, value: {{ $config.modelSha256 | quote }}}
+            - {name: MLOPS_REQUESTS_PER_MINUTE, value: {{ $root.Values.rateLimitPerMinute | quote }}}
+          resources:
+            {{- toYaml $root.Values.resources | nindent 12 }}
+          readinessProbe:
+            httpGet: {path: /health/ready, port: http}
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            httpGet: {path: /health/live, port: http}
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          volumeMounts:
+            - {name: model, mountPath: /models, readOnly: true}
+          securityContext:
+            runAsUser: 10001
+            runAsGroup: 10001
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: ["ALL"]}
+      volumes:
+        - name: model
+          emptyDir: {}
+{{- end }}
+{{- end }}

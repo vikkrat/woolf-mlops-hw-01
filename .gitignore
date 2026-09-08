@@ -8,4 +8,9 @@ backend.hcl
 terraform.rc
 kubeconfig*
 argocd-admin-password.txt
-
+.venv/
+__pycache__/
+*.pyc
+*.tfplan
+tools/
+mlruns/

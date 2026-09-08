@@ -1,5 +1,12 @@
 # MLOps CI/CD 2.0 — домашні завдання
 
+## Фінальний проєкт
+
+Інтегрована production-ready платформа знаходиться в
+[`final-project/`](final-project/README.md): Terraform + EKS + ArgoCD + MLflow
+Model Registry + Canary 90/10 + Prometheus/Grafana/Loki/Evidently + GitLab CI.
+Авторка: **Viktoriia_Kratser**.
+
 ## Homework 4 / lesson-9
 
 MLflow experiment tracking, MinIO/PostgreSQL backend, PushGateway metrics and

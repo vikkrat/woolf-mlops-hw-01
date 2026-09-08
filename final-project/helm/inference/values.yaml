@@ -1,0 +1,29 @@
+environment: staging
+image:
+  repository: REPLACE_WITH_ECR/inference
+  pullPolicy: IfNotPresent
+stable:
+  tag: stable
+  modelVersion: "1"
+  modelS3Uri: s3://REPLACE_WITH_BUCKET/models/production/model.joblib
+  modelSha256: REPLACE_WITH_SHA256
+  replicas: 2
+canary:
+  enabled: true
+  weight: 10
+  tag: candidate
+  modelVersion: "2"
+  modelS3Uri: s3://REPLACE_WITH_BUCKET/models/staging/model.joblib
+  modelSha256: REPLACE_WITH_SHA256
+  replicas: 1
+serviceAccount:
+  name: inference
+  roleArn: REPLACE_WITH_IRSA_ROLE_ARN
+ingress:
+  enabled: true
+  className: nginx
+  host: iris.local
+resources:
+  requests: {cpu: 100m, memory: 192Mi}
+  limits: {cpu: 500m, memory: 512Mi}
+rateLimitPerMinute: 60

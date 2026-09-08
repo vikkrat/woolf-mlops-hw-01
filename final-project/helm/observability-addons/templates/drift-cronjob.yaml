@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata: {name: evidently-drift}
+spec:
+  schedule: {{ .Values.driftSchedule | quote }}
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 600
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: evidently
+              image: {{ .Values.trainingImage | quote }}
+              command: ["python", "-m", "src.drift"]
+              env:
+                - {name: PUSHGATEWAY_URL, value: "pushgateway-prometheus-pushgateway.monitoring.svc:9091"}
+              resources:
+                requests: {cpu: 100m, memory: 256Mi}
+                limits: {cpu: 500m, memory: 768Mi}
+              securityContext:
+                runAsNonRoot: true
+                allowPrivilegeEscalation: false
+                capabilities: {drop: ["ALL"]}

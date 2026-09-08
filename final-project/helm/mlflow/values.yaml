@@ -1,0 +1,9 @@
+artifactBucket: REPLACE_WITH_BUCKET
+image:
+  repository: REPLACE_WITH_ECR/mlflow
+  tag: latest
+serviceAccount:
+  roleArn: REPLACE_WITH_IRSA_ROLE_ARN
+resources:
+  requests: {cpu: 100m, memory: 256Mi}
+  limits: {cpu: 500m, memory: 768Mi}

@@ -1,0 +1,7 @@
+environment: staging
+stable: {replicas: 1}
+canary: {replicas: 1}
+ingress: {host: staging.iris.local}
+resources:
+  requests: {cpu: 50m, memory: 128Mi}
+  limits: {cpu: 250m, memory: 256Mi}

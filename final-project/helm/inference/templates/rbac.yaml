@@ -1,0 +1,39 @@
+# Ролі створюються окремо в кожному environment namespace.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata: {name: mlops-engineer}
+rules:
+  {{- if eq .Values.environment "staging" }}
+  - apiGroups: ["", "apps", "batch", "networking.k8s.io"]
+    resources: ["*"]
+    verbs: ["*"]
+  {{- else }}
+  - apiGroups: ["", "apps", "networking.k8s.io"]
+    resources: ["pods", "pods/log", "services", "deployments", "replicasets", "ingresses"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["patch"]
+  {{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata: {name: mlops-engineers}
+subjects:
+  - {kind: Group, name: mlops-engineers, apiGroup: rbac.authorization.k8s.io}
+roleRef: {kind: Role, name: mlops-engineer, apiGroup: rbac.authorization.k8s.io}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata: {name: viewer}
+rules:
+  - apiGroups: ["", "apps", "batch", "networking.k8s.io"]
+    resources: ["pods", "pods/log", "services", "deployments", "replicasets", "jobs", "cronjobs", "ingresses", "events"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata: {name: viewers}
+subjects:
+  - {kind: Group, name: mlops-viewers, apiGroup: rbac.authorization.k8s.io}
+roleRef: {kind: Role, name: viewer, apiGroup: rbac.authorization.k8s.io}

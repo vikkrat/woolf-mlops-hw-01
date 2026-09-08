@@ -1,0 +1,6 @@
+apiVersion: v2
+name: mlflow-platform
+description: Self-hosted MLflow Registry with PostgreSQL metadata and S3 artifacts
+type: application
+version: 1.0.0
+appVersion: "3.3.1"

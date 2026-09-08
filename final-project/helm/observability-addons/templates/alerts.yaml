@@ -1,0 +1,27 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: iris-inference-alerts
+  labels: {release: monitoring}
+spec:
+  groups:
+    - name: iris-inference
+      rules:
+        - alert: InferenceP95LatencyHigh
+          expr: histogram_quantile(0.95, sum by (le) (rate(inference_request_duration_seconds_bucket[5m]))) > {{ .Values.thresholds.p95Seconds }}
+          for: 5m
+          labels: {severity: warning, owner: mlops}
+          annotations:
+            summary: Inference p95 latency is above the documented threshold
+        - alert: InferenceErrorRateHigh
+          expr: sum(rate(inference_requests_total{status=~"5.."}[5m])) / clamp_min(sum(rate(inference_requests_total[5m])), 0.001) > {{ .Values.thresholds.errorRate }}
+          for: 3m
+          labels: {severity: critical, owner: mlops}
+          annotations:
+            summary: More than one percent of inference requests fail
+        - alert: ModelDataDriftDetected
+          expr: model_data_drift_score > {{ .Values.thresholds.driftScore }}
+          for: 15m
+          labels: {severity: warning, owner: mlops}
+          annotations:
+            summary: Evidently detected input data drift
