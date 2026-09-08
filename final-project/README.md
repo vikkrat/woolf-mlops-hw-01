@@ -270,6 +270,10 @@ bash scripts/aws-cost-audit.sh
 - [RUNBOOK.md](RUNBOOK.md) - production-інциденти й операції;
 - [ADR.md](ADR.md) - обґрунтування Canary;
 - [THREAT_MODEL.md](THREAT_MODEL.md) - attack surface та mitigations.
+- [Фактичні докази demo](REPORT.md#evidence) - pipeline, Step Functions, EKS,
+  Argo CD, MLflow, Grafana, Canary та фінальний AWS cleanup.
+
+Фактичний успішний GitLab pipeline: [#2828901906](https://gitlab.com/vikkrat/mlops-final-project/-/pipelines/2828901906).
 
 У репозиторії немає AWS keys, паролів або приватних kubeconfig. Перевірка перед
 push: `git grep -nEi '(AKIA|aws_secret_access_key|BEGIN.*PRIVATE KEY)'`.

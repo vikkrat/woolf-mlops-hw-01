@@ -91,7 +91,9 @@ locals {
           helm    = { releaseName = "monitoring", values = "grafana:\n  service:\n    type: ClusterIP\nprometheus:\n  prometheusSpec:\n    retention: 6h\n    serviceMonitorSelectorNilUsesHelmValues: false\n" }
         }
         destination = { server = "https://kubernetes.default.svc", namespace = "monitoring" }
-        syncPolicy  = { automated = { prune = true, selfHeal = true }, syncOptions = ["CreateNamespace=true"] }
+        # Великі CRD kube-prometheus-stack перевищують ліміт annotation
+        # client-side apply, тому Argo CD атомарно замінює їх без цієї annotation.
+        syncPolicy  = { automated = { prune = true, selfHeal = true }, syncOptions = ["CreateNamespace=true", "Replace=true"] }
       }
     },
     {
