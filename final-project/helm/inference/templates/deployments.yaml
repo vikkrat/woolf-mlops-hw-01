@@ -49,6 +49,8 @@ spec:
             # aws-cli створює службовий каталог .aws; /tmp є writable навіть
             # коли root filesystem контейнера навмисно read-only.
             - {name: HOME, value: /tmp}
+            - {name: AWS_CONFIG_FILE, value: /tmp/aws-config}
+            - {name: AWS_SHARED_CREDENTIALS_FILE, value: /tmp/aws-credentials}
             - {name: MODEL_S3_URI, value: {{ $config.modelS3Uri | quote }}}
             - {name: MODEL_SHA256, value: {{ $config.modelSha256 | quote }}}
           volumeMounts:
