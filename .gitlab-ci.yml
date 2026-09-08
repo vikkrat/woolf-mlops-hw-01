@@ -133,3 +133,9 @@ promote-production:
   allow_failure: false
   rules:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+# GitLab-maintained analyzer scans the full Git history for exposed credentials.
+secret_detection:
+  stage: security
+
+include:
+  - template: Security/Secret-Detection.gitlab-ci.yml
