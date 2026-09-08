@@ -18,7 +18,7 @@ variable "git_revision" {
 }
 variable "gitlab_project_path" {
   type    = string
-  default = "vikkrat-group/mlops-final-project"
+  default = "vikkrat/mlops-final-project"
 }
 variable "release_image_tag" {
   description = "Immutable 40-character Git commit SHA used for all images."
