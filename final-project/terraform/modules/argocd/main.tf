@@ -19,29 +19,31 @@ locals {
   ]
   extra_objects = [
     {
-      apiVersion = "argoproj.io/v1alpha1", kind = "ApplicationSet"
-      metadata   = { name = "iris-environments", namespace = "argocd" }
+      apiVersion = "argoproj.io/v1alpha1", kind = "Application"
+      metadata   = { name = "iris-staging", namespace = "argocd" }
       spec = {
-        generators = [{ list = { elements = [
-          { environment = "staging", namespace = "staging", valuesFile = "values-staging.yaml" },
-          { environment = "production", namespace = "production", valuesFile = "values-production.yaml" }
-        ] } }]
-        template = {
-          # argo-cd chart проганяє extraObjects через Helm tpl. Внутрішні
-          # ApplicationSet-змінні екрануємо raw-string виразом Helm, щоб
-          # {{environment}} залишився для контролера ApplicationSet.
-          metadata = { name = "iris-{{ `{{environment}}` }}" }
-          spec = {
-            project = "default"
-            source = {
-              repoURL = local.repository, targetRevision = var.git_revision
-              path    = "final-project/helm/inference"
-              helm    = { valueFiles = ["values.yaml", "{{ `{{valuesFile}}` }}"], parameters = local.inference_parameters }
-            }
-            destination = { server = "https://kubernetes.default.svc", namespace = "{{ `{{namespace}}` }}" }
-            syncPolicy  = { automated = { prune = true, selfHeal = true }, syncOptions = ["CreateNamespace=true"] }
-          }
+        project = "default"
+        source = {
+          repoURL = local.repository, targetRevision = var.git_revision
+          path    = "final-project/helm/inference"
+          helm    = { valueFiles = ["values.yaml", "values-staging.yaml"], parameters = local.inference_parameters }
         }
+        destination = { server = "https://kubernetes.default.svc", namespace = "staging" }
+        syncPolicy  = { automated = { prune = true, selfHeal = true }, syncOptions = ["CreateNamespace=true"] }
+      }
+    },
+    {
+      apiVersion = "argoproj.io/v1alpha1", kind = "Application"
+      metadata   = { name = "iris-production", namespace = "argocd" }
+      spec = {
+        project = "default"
+        source = {
+          repoURL = local.repository, targetRevision = var.git_revision
+          path    = "final-project/helm/inference"
+          helm    = { valueFiles = ["values.yaml", "values-production.yaml"], parameters = local.inference_parameters }
+        }
+        destination = { server = "https://kubernetes.default.svc", namespace = "production" }
+        syncPolicy  = { automated = { prune = true, selfHeal = true }, syncOptions = ["CreateNamespace=true"] }
       }
     },
     {
