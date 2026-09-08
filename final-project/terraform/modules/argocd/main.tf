@@ -27,15 +27,18 @@ locals {
           { environment = "production", namespace = "production", valuesFile = "values-production.yaml" }
         ] } }]
         template = {
-          metadata = { name = "iris-{{environment}}" }
+          # argo-cd chart проганяє extraObjects через Helm tpl. Внутрішні
+          # ApplicationSet-змінні екрануємо raw-string виразом Helm, щоб
+          # {{environment}} залишився для контролера ApplicationSet.
+          metadata = { name = "iris-{{ `{{environment}}` }}" }
           spec = {
             project = "default"
             source = {
               repoURL = local.repository, targetRevision = var.git_revision
               path    = "final-project/helm/inference"
-              helm    = { valueFiles = ["values.yaml", "{{valuesFile}}"], parameters = local.inference_parameters }
+              helm    = { valueFiles = ["values.yaml", "{{ `{{valuesFile}}` }}"], parameters = local.inference_parameters }
             }
-            destination = { server = "https://kubernetes.default.svc", namespace = "{{namespace}}" }
+            destination = { server = "https://kubernetes.default.svc", namespace = "{{ `{{namespace}}` }}" }
             syncPolicy  = { automated = { prune = true, selfHeal = true }, syncOptions = ["CreateNamespace=true"] }
           }
         }
@@ -152,6 +155,14 @@ resource "helm_release" "argocd" {
   values = [yamlencode({
     server       = { service = { type = "ClusterIP" } }
     configs      = { params = { "server.insecure" = true } }
-    extraObjects = local.extra_objects
   })]
+}
+
+# CRD Application/ApplicationSet з'являються лише після встановлення Argo CD.
+# Тому GitOps-об'єкти створюємо окремим кроком з явною залежністю від Helm release.
+resource "kubernetes_manifest" "gitops_application" {
+  for_each = { for object in local.extra_objects : object.metadata.name => object }
+
+  manifest  = each.value
+  depends_on = [helm_release.argocd]
 }

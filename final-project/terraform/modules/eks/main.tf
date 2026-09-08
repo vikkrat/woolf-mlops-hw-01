@@ -22,7 +22,10 @@ module "this" {
   }
   eks_managed_node_groups = {
     general = {
-      instance_types = ["t3.medium"]
+      # Цей тип має 2 vCPU / 8 GiB RAM і позначений AWS як Free Tier eligible.
+      # 8 GiB потрібні, щоб на двох навчальних вузлах умістилися Argo CD,
+      # MLflow, Prometheus, Grafana, Loki та inference-сервіс одночасно.
+      instance_types = ["m7i-flex.large"]
       ami_type       = "AL2023_x86_64_STANDARD"
       min_size       = 2
       max_size       = 3
