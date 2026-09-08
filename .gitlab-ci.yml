@@ -24,7 +24,11 @@ variables:
 
 terraform-validate:
   stage: validate
-  image: hashicorp/terraform:1.13.0
+  image:
+    name: hashicorp/terraform:1.13.0
+    # Офіційний image запускає terraform як ENTRYPOINT. GitLab Runner має
+    # запускати shell-скрипт job, тому entrypoint явно вимикаємо.
+    entrypoint: [""]
   script:
     - cd "$PROJECT_DIR/terraform"
     - terraform fmt -check -recursive
@@ -33,7 +37,10 @@ terraform-validate:
 
 helm-lint:
   stage: validate
-  image: alpine/helm:3.18.4
+  image:
+    name: alpine/helm:3.18.4
+    # Інакше Runner фактично виконує `helm sh ...` і job падає ще до lint.
+    entrypoint: [""]
   script:
     - helm lint "$PROJECT_DIR/helm/inference"
     - helm lint "$PROJECT_DIR/helm/mlflow"
@@ -91,7 +98,9 @@ container-scan:
 
 train-model:
   stage: train
-  image: amazon/aws-cli:2.27.49
+  image:
+    name: amazon/aws-cli:2.27.49
+    entrypoint: [""]
   extends: .aws_oidc
   script:
     - >-
@@ -109,7 +118,9 @@ train-model:
 
 promote-production:
   stage: promote
-  image: amazon/aws-cli:2.27.49
+  image:
+    name: amazon/aws-cli:2.27.49
+    entrypoint: [""]
   extends: .aws_oidc
   before_script:
     - !reference [.aws_oidc, before_script]
